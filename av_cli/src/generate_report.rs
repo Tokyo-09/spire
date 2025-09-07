@@ -3,7 +3,7 @@ use std::fs::write;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use av_core::scanner::ScanResult;
+use av_core::core::ScanResult;
 
 pub fn generate_html_report(
     results: &[ScanResult],

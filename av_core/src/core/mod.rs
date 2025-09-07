@@ -2,8 +2,8 @@ use av_db::models::MalwareDB;
 
 use std::path::PathBuf;
 
-pub mod analysis;
 pub mod hashes;
+pub mod scanner;
 
 #[derive(Debug, Clone)]
 pub struct ProcessScanResult {

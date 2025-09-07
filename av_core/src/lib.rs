@@ -1,6 +1,6 @@
-pub mod actions;
+pub mod core;
+pub mod modules;
 mod rules;
-pub mod scanner;
 
 pub fn calculate_entropy(data: &[u8]) -> f64 {
     let mut counts = [0; 256];

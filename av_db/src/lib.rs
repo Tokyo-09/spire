@@ -27,7 +27,7 @@ impl MalwareDB {
         unimplemented!();
     }
 
-    pub fn update_db()  -> anyhow::Result<()> {
+    pub fn update_db() -> anyhow::Result<()> {
         fetch_updates()?;
 
         unimplemented!();

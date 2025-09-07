@@ -1,9 +1,9 @@
 use clap::Parser;
-use rusqlite::Connection;
 use indicatif::MultiProgress;
+use rusqlite::Connection;
 
-use av_core::actions::quarantine::Quarantine;
-use av_core::scanner::analysis::{scan_path, scan_yara};
+use av_core::core::scanner::{scan_path, scan_yara};
+use av_core::modules::quarantine::Quarantine;
 
 use crate::cli::QuarantineAction;
 use cli::commands::{Cli, Command};

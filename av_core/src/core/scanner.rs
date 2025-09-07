@@ -1,8 +1,8 @@
 use av_db::models::MalwareDB;
 
-use crate::actions::quarantine::Quarantine;
-use crate::scanner::ScanResult;
-use crate::scanner::hashes::Hasher;
+use crate::core::ScanResult;
+use crate::core::hashes::Hasher;
+use crate::modules::quarantine::Quarantine;
 
 use indicatif::{ProgressBar, ProgressStyle};
 use log::error;

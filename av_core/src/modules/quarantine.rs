@@ -5,7 +5,7 @@ use rusqlite::Connection;
 use std::fs::{self, remove_file};
 use std::path::PathBuf;
 
-use crate::scanner::ScanResult;
+use crate::core::ScanResult;
 
 #[allow(dead_code)]
 pub struct Quarantine {
