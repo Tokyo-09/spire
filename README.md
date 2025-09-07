@@ -16,10 +16,10 @@
 
 | Module | Description |
 |--------|-------------|
-| Av_core| Core of the AV |
-| AV_cli | Main cli logic |
-| Av_Gui | GUI client |z
-| Av_db ( Planned to Deprecated ) | Antivirus database |
+| Av_core| Provides the core functionality, real-time threat detection, scanning algorithms, and etc |
+| AV_cli | The command-line interface |
+| Av_Gui | The graphical user interface |
+| Av_db ( Planned to Deprecated ) | The antivirus database module сurrently stores threat signatures and definitions used for identifying malware |
 
 # Planned Features
 
@@ -85,7 +85,7 @@ Options:
 
 ## Example usage
 
-[![usage](img/usage.png)]
+![usage](img/usage.png)
 
 ```
 # Regular scan
