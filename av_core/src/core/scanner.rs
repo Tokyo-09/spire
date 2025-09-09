@@ -11,6 +11,12 @@ use std::path::PathBuf;
 use walkdir::WalkDir;
 use yara_x::{Compiler, Scanner as yara_Scanner};
 
+pub enum IocMarksLevel {
+    High,
+    Medium,
+    Low,
+}
+
 #[allow(dead_code)]
 pub struct Scanner {
     conn: Connection,

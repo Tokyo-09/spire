@@ -6,19 +6,10 @@ edition = "2024"
 [dependencies]
 tonic = "0.14.2"
 prost = "0.14.1"
-
-av_core = { path = "../av_core" }  # assuming workspace linkage
-
-tokio = { version = "1", features = ["full", "rt-multi-thread", "signal", "net", "fs"] }
-tokio-stream = { version = "0.1", features = ["net"] }
-futures = "0.3"
-
-sha2 = "0.10"  # for hashing mock
-hex = "0.4"    # for hashing mock
-log = "0.4"
-env_logger = "0.11"
 tonic-prost = "0.14.2"
 anyhow.workspace = true
+
+av_core = { path = "../av_core" }  # assuming workspace linkage
 
 [build-dependencies]
 tonic-prost-build  = "0.14.2"

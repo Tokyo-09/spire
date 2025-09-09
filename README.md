@@ -19,7 +19,7 @@
 | Av_core| Provides the core functionality, real-time threat detection, scanning algorithms, and etc |
 | Av_cli | The command-line interface |
 | Av_gui | The graphical user interface |
-| Av_engine| Listens on a local Unix Domain Socket (UDS) or TCP localhost, accepts JSON/Protobuf commands, performs scanning, and returns the result. Runs as a service with the necessary privileges. |
+| Av_engine| Listens on a local Unix Domain Socket (UDS) or TCP localhost, accepts JSON/Protobuf commands, performs scanning, and returns the result. Runs as a service with the necessary privileges. Use gRPC to communicate with clients |
 | DB | The sqlite database that stores threat signatures and definitions used for identifying malware |
 
 # Planned Features
