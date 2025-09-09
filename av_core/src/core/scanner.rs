@@ -1,4 +1,4 @@
-use av_db::models::MalwareDB;
+use crate::db::MalwareDB;
 
 use crate::core::ScanResult;
 use crate::core::hashes::Hasher;

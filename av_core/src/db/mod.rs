@@ -1,10 +1,12 @@
-use crate::models::MalwareDB;
-use update::update::fetch_updates;
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct MalwareDB {
+    pub malware_name: String,
+    pub md5hash: String,
+    pub sha256hash: String,
+}
 
 use rusqlite::{Connection, Statement};
-
-pub mod models;
-pub mod update;
 
 impl MalwareDB {
     pub fn query_db(conn: &Connection) -> anyhow::Result<()> {
@@ -28,8 +30,6 @@ impl MalwareDB {
     }
 
     pub fn update_db() -> anyhow::Result<()> {
-        fetch_updates()?;
-
         unimplemented!();
     }
 }

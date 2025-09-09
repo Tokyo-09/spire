@@ -17,8 +17,8 @@
 | Module | Description |
 |--------|-------------|
 | Av_core| Provides the core functionality, real-time threat detection, scanning algorithms, and etc |
-| AV_cli | The command-line interface |
-| Av_Gui | The graphical user interface |
+| Av_cli | The command-line interface |
+| Av_gui | The graphical user interface |
 | Av_db ( Planned to Deprecated ) | The antivirus database module сurrently stores threat signatures and definitions used for identifying malware |
 
 # Planned Features
@@ -37,6 +37,7 @@
 * [ X ] Perform scans using YARA rules
 * [  ] Conduct behavioral analysis of files
 * [  ] Enable real-time monitor mode
+* [  ] Add full disk scan
 * [  ] Implement TCP/IP filtering for malicious hosts and ports
 * [  ] Scan newly created files on disk for static Indicators of Compromise (IOCs)
 * [  ] Analyze newly created files for Import Address Table (IAT) patterns

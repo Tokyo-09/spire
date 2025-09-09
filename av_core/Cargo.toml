@@ -16,5 +16,4 @@ rusqlite = { workspace = true }
 anyhow = { workspace = true }
 indicatif = { workspace = true }
 chrono = { workspace = true }
-
-av_db = { path = "../av_db" }
+reqwest = { workspace = true }

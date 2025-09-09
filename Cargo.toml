@@ -1,5 +1,5 @@
 [workspace]
-members = ["av_core", "av_cli", "av_db"]
+members = ["av_core", "av_cli"]
 resolver = "2"
 
 [workspace.dependencies]

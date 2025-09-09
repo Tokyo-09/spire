@@ -227,27 +227,17 @@ name = "av_core"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "av_db",
  "chrono",
  "dirs",
  "hex",
  "indicatif",
  "log",
  "md5",
+ "reqwest",
  "rusqlite",
  "sha2",
  "walkdir",
  "yara-x",
-]
-
-[[package]]
-name = "av_db"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "dirs",
- "reqwest",
- "rusqlite",
 ]
 
 [[package]]
