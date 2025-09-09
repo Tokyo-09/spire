@@ -1,5 +1,4 @@
 pub mod core;
-pub mod db;
 pub mod modules;
 mod rules;
 

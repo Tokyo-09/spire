@@ -17,9 +17,6 @@ pub struct Cli {
 #[derive(Subcommand, Debug)]
 pub enum Command {
     Scan {
-        // Path to database
-        #[arg(long)]
-        db: PathBuf,
         // Directory or file to scan
         #[arg(long)]
         path: PathBuf,
@@ -28,8 +25,6 @@ pub enum Command {
         report: Option<PathBuf>,
     },
     YaraScan {
-        #[arg(long)]
-        db: PathBuf,
         //Path with yara rules
         #[arg(long)]
         rules: PathBuf,
@@ -41,9 +36,6 @@ pub enum Command {
         report: Option<PathBuf>,
     },
     ProcessScan {
-        #[arg(long)]
-        db: PathBuf,
-
         #[clap(long)]
         yara_rules: Option<PathBuf>,
     },
@@ -56,10 +48,6 @@ pub enum Command {
         action: QuarantineAction,
     },
     Monitor {
-        // Database
-        #[arg(long)]
-        db: PathBuf,
-
         // Excluded directories
         #[arg(long)]
         excluded_dirs: Vec<PathBuf>,
