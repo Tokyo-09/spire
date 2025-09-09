@@ -3,20 +3,22 @@ use indicatif::MultiProgress;
 use log::debug;
 use rusqlite::Connection;
 
-use std::env;
-use std::fs::DirBuilder;
-use std::path::Path;
+use std::{env, fs::DirBuilder, path::Path};
 
-use av_core::core::scanner::Scanner;
-use av_core::modules::db::ThreatDatabase;
-use av_core::modules::quarantine::Quarantine;
+use av_core::{
+    core::scanner::Scanner,
+    modules::{db::ThreatDatabase, quarantine::Quarantine},
+};
+use cli::{
+    QuarantineAction,
+    commands::{Cli, Command},
+};
 
-use crate::cli::QuarantineAction;
-use cli::commands::{Cli, Command};
 use generate_report::generate_html_report;
 
 mod cli;
 mod generate_report;
+mod generated;
 
 fn main() -> anyhow::Result<()> {
     env_logger::init();

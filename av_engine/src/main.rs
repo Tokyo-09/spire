@@ -1,3 +1,4 @@
-fn main() {
-    print!("Hello");
+#[tokio::main]
+async fn main() {
+    unimplemented!();
 }

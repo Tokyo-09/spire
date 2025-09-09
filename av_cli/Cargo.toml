@@ -13,3 +13,10 @@ anyhow = { workspace = true }
 indicatif = { workspace = true }
 chrono = { workspace = true }
 log.workspace = true
+
+tonic = "0.14.2"
+prost = "0.14.1"
+tonic-prost = "0.14.2"
+
+[build-dependencies]
+tonic-prost-build  = "0.14.2"
