@@ -94,7 +94,7 @@ pub fn generate_html_report(
                         <td>{} (MD5: {}, SHA256: {})</td>
                     </tr>"#,
                     path.display(),
-                    malware.malware_name,
+                    malware.name,
                     malware.md5hash,
                     malware.sha256hash
                 ));

@@ -7,8 +7,8 @@ use std::env;
 use std::fs::DirBuilder;
 use std::path::Path;
 
-use av_core::core::scanner::{scan_path, scan_yara};
-use av_core::modules::db::MalwareDB;
+use av_core::core::scanner::Scanner;
+use av_core::modules::db::ThreatDatabase;
 use av_core::modules::quarantine::Quarantine;
 
 use crate::cli::QuarantineAction;
@@ -36,7 +36,7 @@ fn main() -> anyhow::Result<()> {
     // Проверяем существование файла database.db
     if !Path::new(&db_path).exists() {
         debug!("Database not found, downloading...");
-        MalwareDB::new(&spire_dir, &db_path)?;
+        ThreatDatabase::new(&spire_dir, &db_path)?;
     } else {
         debug!("Database already exists at: {}", db_path);
     }
@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
 
     match args.command {
         Command::Scan { path, report } => {
-            let results = scan_path(&conn, &path)?;
+            let results = Scanner::scan_path(&conn, &path)?;
             if let Some(report_path) = report {
                 generate_html_report(&results, &report_path, None)?;
                 m.println(format!("Report generated at: {}", report_path.display()))?;
@@ -61,7 +61,7 @@ fn main() -> anyhow::Result<()> {
             if !path.exists() {
                 anyhow::bail!("Scan path does not exist: {}", path.display());
             }
-            let results = scan_yara(&conn, &rules, &path)?;
+            let results = Scanner::scan_yara(&conn, &rules, &path)?;
             if let Some(report_path) = report {
                 generate_html_report(&results, &report_path, None)?;
                 m.println(format!("Report generated at: {}", report_path.display()))?;
@@ -104,7 +104,7 @@ fn main() -> anyhow::Result<()> {
             }
         },
         Command::Monitor {} => {
-            m.println(format!("Monitor not implemented"))?;
+            "Monitor not implemented".to_string();
             unimplemented!("Monitor functionality is not yet implemented");
         }
         Command::UpdateDB { ip } => {

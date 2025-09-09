@@ -1,7 +1,8 @@
-use crate::modules::db::MalwareDB;
+use crate::modules::db::ThreatDatabase;
 
 use std::path::PathBuf;
 
+pub mod config;
 pub mod hashes;
 pub mod scanner;
 
@@ -18,7 +19,7 @@ pub enum ScanResult {
     Clean(PathBuf),
     Threat {
         path: PathBuf,
-        malware: MalwareDB,
+        malware: ThreatDatabase,
     },
     YaraThreat {
         path: PathBuf,

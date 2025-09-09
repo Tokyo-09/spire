@@ -17,7 +17,7 @@ pub struct Quarantine {
 impl Quarantine {
     pub fn quarantine_file(conn: &Connection, result: &ScanResult) -> Result<()> {
         let (path, malware_name) = match result {
-            ScanResult::Threat { path, malware } => (path.clone(), malware.malware_name.clone()),
+            ScanResult::Threat { path, malware } => (path.clone(), malware.name.clone()),
             ScanResult::YaraThreat {
                 path,
                 matching_rules,
