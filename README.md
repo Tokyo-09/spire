@@ -19,7 +19,7 @@
 | Av_core| Provides the core functionality, real-time threat detection, scanning algorithms, and etc |
 | Av_cli | The command-line interface |
 | Av_gui | The graphical user interface |
-| Av_db ( Planned to Deprecated ) | The antivirus database module сurrently stores threat signatures and definitions used for identifying malware |
+| DB | The sqlite database that stores threat signatures and definitions used for identifying malware |
 
 # Planned Features
 
