@@ -1,4 +1,4 @@
-use crate::db::MalwareDB;
+use crate::modules::db::MalwareDB;
 
 use std::path::PathBuf;
 

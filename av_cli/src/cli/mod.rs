@@ -5,19 +5,12 @@ pub mod commands;
 #[derive(clap::Subcommand, Debug)]
 pub enum QuarantineAction {
     // List quarantined files
-    List {
-        #[clap(long, value_parser)]
-        db: PathBuf,
-    },
+    List {},
     Restore {
-        #[clap(long, value_parser)]
-        db: PathBuf,
         #[clap(long, value_parser)]
         id: i64,
     },
     Delete {
-        #[clap(long, value_parser)]
-        db: PathBuf,
         #[clap(long, value_parser)]
         id: i64,
     },
@@ -25,13 +18,8 @@ pub enum QuarantineAction {
 
 #[derive(clap::Subcommand)]
 pub enum ConfigAction {
-    List {
-        // List current config
-        db: PathBuf,
-    },
+    List {},
     Add {
-        db: PathBuf,
-
         exclude_dir: Option<PathBuf>,
 
         exclude_extensions: Option<Vec<String>>,
@@ -39,8 +27,6 @@ pub enum ConfigAction {
         exclude_processes: Option<Vec<String>>,
     },
     Delete {
-        db: PathBuf,
-
         rule_id: Option<i64>,
     },
 }
