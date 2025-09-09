@@ -47,21 +47,9 @@ pub enum Command {
         #[clap(subcommand)]
         action: QuarantineAction,
     },
-    Monitor {
-        // Excluded directories
-        #[arg(long)]
-        excluded_dirs: Vec<PathBuf>,
-
-        // Excluded file extensions
-        #[arg(long)]
-        excluded_extensions: Vec<String>,
-
-        // Periodic scan time
-        #[arg(long)]
-        scan_time: String,
-    },
+    Monitor {},
     UpdateDB {
         // Server ip address
-        ip: Ipv4Addr,
+        ip: Option<Ipv4Addr>,
     },
 }

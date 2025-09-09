@@ -12,3 +12,4 @@ rusqlite = { workspace = true }
 anyhow = { workspace = true }
 indicatif = { workspace = true }
 chrono = { workspace = true }
+log.workspace = true
