@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package spire;
 
-service Antivirus {
+service Spire {
   rpc ScanFile(ScanFileRequest) returns (ScanResult);
   rpc ScanBuffer(ScanBufferRequest) returns (ScanResult);
   rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);

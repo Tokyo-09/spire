@@ -5,6 +5,7 @@ use std::path::PathBuf;
 pub mod config;
 pub mod hashes;
 pub mod scanner;
+pub mod win_pe;
 
 #[derive(Debug, Clone)]
 pub struct ProcessScanResult {

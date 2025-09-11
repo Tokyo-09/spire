@@ -29,8 +29,8 @@ fn main() -> anyhow::Result<()> {
     let db_path = format!("{}/database.db", spire_dir);
 
     // Проверяем существование директории ~/.spire
+    // Cоздаем ее если нет
     if !Path::new(&spire_dir).exists() {
-        // Создаем директорию, если ее нет
         DirBuilder::new().create(&spire_dir)?;
         debug!("Created directory: {}", spire_dir);
     }

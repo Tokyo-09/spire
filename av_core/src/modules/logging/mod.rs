@@ -1,3 +1,5 @@
+pub mod utils;
+
 #[allow(dead_code)]
 pub struct Logs {
     date: String,

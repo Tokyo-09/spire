@@ -32,21 +32,21 @@ pub struct ShutdownRequest {}
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ShutdownResponse {}
 /// Generated client implementations.
-pub mod antivirus_client {
+pub mod spire_client {
     #![allow(
         unused_variables,
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value,
+        clippy::let_unit_value
     )]
-    use tonic::codegen::*;
     use tonic::codegen::http::Uri;
+    use tonic::codegen::*;
     #[derive(Debug, Clone)]
-    pub struct AntivirusClient<T> {
+    pub struct SpireClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl AntivirusClient<tonic::transport::Channel> {
+    impl SpireClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -57,7 +57,7 @@ pub mod antivirus_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> AntivirusClient<T>
+    impl<T> SpireClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
@@ -75,21 +75,20 @@ pub mod antivirus_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> AntivirusClient<InterceptedService<T, F>>
+        ) -> SpireClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::Body>,
-                Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
+                    http::Request<tonic::body::Body>,
+                    Response = http::Response<
+                        <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
+                    >,
                 >,
-            >,
-            <T as tonic::codegen::Service<
-                http::Request<tonic::body::Body>,
-            >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
+            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
+                Into<StdError> + std::marker::Send + std::marker::Sync,
         {
-            AntivirusClient::new(InterceptedService::new(inner, interceptor))
+            SpireClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -126,100 +125,73 @@ pub mod antivirus_client {
             &mut self,
             request: impl tonic::IntoRequest<super::ScanFileRequest>,
         ) -> std::result::Result<tonic::Response<super::ScanResult>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::unknown(
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
+            })?;
             let codec = tonic_prost::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/spire.Antivirus/ScanFile");
+            let path = http::uri::PathAndQuery::from_static("/spire.Spire/ScanFile");
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new("spire.Antivirus", "ScanFile"));
+            req.extensions_mut()
+                .insert(GrpcMethod::new("spire.Spire", "ScanFile"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn scan_buffer(
             &mut self,
             request: impl tonic::IntoRequest<super::ScanBufferRequest>,
         ) -> std::result::Result<tonic::Response<super::ScanResult>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::unknown(
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
+            })?;
             let codec = tonic_prost::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/spire.Antivirus/ScanBuffer",
-            );
+            let path = http::uri::PathAndQuery::from_static("/spire.Spire/ScanBuffer");
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("spire.Antivirus", "ScanBuffer"));
+                .insert(GrpcMethod::new("spire.Spire", "ScanBuffer"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn get_status(
             &mut self,
             request: impl tonic::IntoRequest<super::GetStatusRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::GetStatusResponse>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::unknown(
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+        ) -> std::result::Result<tonic::Response<super::GetStatusResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
+            })?;
             let codec = tonic_prost::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/spire.Antivirus/GetStatus",
-            );
+            let path = http::uri::PathAndQuery::from_static("/spire.Spire/GetStatus");
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new("spire.Antivirus", "GetStatus"));
+            req.extensions_mut()
+                .insert(GrpcMethod::new("spire.Spire", "GetStatus"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn shutdown(
             &mut self,
             request: impl tonic::IntoRequest<super::ShutdownRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::ShutdownResponse>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::unknown(
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+        ) -> std::result::Result<tonic::Response<super::ShutdownResponse>, tonic::Status> {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
+            })?;
             let codec = tonic_prost::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/spire.Antivirus/Shutdown");
+            let path = http::uri::PathAndQuery::from_static("/spire.Spire/Shutdown");
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new("spire.Antivirus", "Shutdown"));
+            req.extensions_mut()
+                .insert(GrpcMethod::new("spire.Spire", "Shutdown"));
             self.inner.unary(req, path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod antivirus_server {
+pub mod spire_server {
     #![allow(
         unused_variables,
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value,
+        clippy::let_unit_value
     )]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with AntivirusServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with SpireServer.
     #[async_trait]
-    pub trait Antivirus: std::marker::Send + std::marker::Sync + 'static {
+    pub trait Spire: std::marker::Send + std::marker::Sync + 'static {
         async fn scan_file(
             &self,
             request: tonic::Request<super::ScanFileRequest>,
@@ -231,27 +203,21 @@ pub mod antivirus_server {
         async fn get_status(
             &self,
             request: tonic::Request<super::GetStatusRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::GetStatusResponse>,
-            tonic::Status,
-        >;
+        ) -> std::result::Result<tonic::Response<super::GetStatusResponse>, tonic::Status>;
         async fn shutdown(
             &self,
             request: tonic::Request<super::ShutdownRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::ShutdownResponse>,
-            tonic::Status,
-        >;
+        ) -> std::result::Result<tonic::Response<super::ShutdownResponse>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct AntivirusServer<T> {
+    pub struct SpireServer<T> {
         inner: Arc<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
         max_decoding_message_size: Option<usize>,
         max_encoding_message_size: Option<usize>,
     }
-    impl<T> AntivirusServer<T> {
+    impl<T> SpireServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -264,10 +230,7 @@ pub mod antivirus_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(
-            inner: T,
-            interceptor: F,
-        ) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -302,9 +265,9 @@ pub mod antivirus_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for AntivirusServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for SpireServer<T>
     where
-        T: Antivirus,
+        T: Spire,
         B: Body + std::marker::Send + 'static,
         B::Error: Into<StdError> + std::marker::Send + 'static,
     {
@@ -319,26 +282,18 @@ pub mod antivirus_server {
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             match req.uri().path() {
-                "/spire.Antivirus/ScanFile" => {
+                "/spire.Spire/ScanFile" => {
                     #[allow(non_camel_case_types)]
-                    struct ScanFileSvc<T: Antivirus>(pub Arc<T>);
-                    impl<
-                        T: Antivirus,
-                    > tonic::server::UnaryService<super::ScanFileRequest>
-                    for ScanFileSvc<T> {
+                    struct ScanFileSvc<T: Spire>(pub Arc<T>);
+                    impl<T: Spire> tonic::server::UnaryService<super::ScanFileRequest> for ScanFileSvc<T> {
                         type Response = super::ScanResult;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ScanFileRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as Antivirus>::scan_file(&inner, request).await
-                            };
+                            let fut = async move { <T as Spire>::scan_file(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -364,26 +319,19 @@ pub mod antivirus_server {
                     };
                     Box::pin(fut)
                 }
-                "/spire.Antivirus/ScanBuffer" => {
+                "/spire.Spire/ScanBuffer" => {
                     #[allow(non_camel_case_types)]
-                    struct ScanBufferSvc<T: Antivirus>(pub Arc<T>);
-                    impl<
-                        T: Antivirus,
-                    > tonic::server::UnaryService<super::ScanBufferRequest>
-                    for ScanBufferSvc<T> {
+                    struct ScanBufferSvc<T: Spire>(pub Arc<T>);
+                    impl<T: Spire> tonic::server::UnaryService<super::ScanBufferRequest> for ScanBufferSvc<T> {
                         type Response = super::ScanResult;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ScanBufferRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as Antivirus>::scan_buffer(&inner, request).await
-                            };
+                            let fut =
+                                async move { <T as Spire>::scan_buffer(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -409,26 +357,19 @@ pub mod antivirus_server {
                     };
                     Box::pin(fut)
                 }
-                "/spire.Antivirus/GetStatus" => {
+                "/spire.Spire/GetStatus" => {
                     #[allow(non_camel_case_types)]
-                    struct GetStatusSvc<T: Antivirus>(pub Arc<T>);
-                    impl<
-                        T: Antivirus,
-                    > tonic::server::UnaryService<super::GetStatusRequest>
-                    for GetStatusSvc<T> {
+                    struct GetStatusSvc<T: Spire>(pub Arc<T>);
+                    impl<T: Spire> tonic::server::UnaryService<super::GetStatusRequest> for GetStatusSvc<T> {
                         type Response = super::GetStatusResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::GetStatusRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as Antivirus>::get_status(&inner, request).await
-                            };
+                            let fut =
+                                async move { <T as Spire>::get_status(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -454,26 +395,18 @@ pub mod antivirus_server {
                     };
                     Box::pin(fut)
                 }
-                "/spire.Antivirus/Shutdown" => {
+                "/spire.Spire/Shutdown" => {
                     #[allow(non_camel_case_types)]
-                    struct ShutdownSvc<T: Antivirus>(pub Arc<T>);
-                    impl<
-                        T: Antivirus,
-                    > tonic::server::UnaryService<super::ShutdownRequest>
-                    for ShutdownSvc<T> {
+                    struct ShutdownSvc<T: Spire>(pub Arc<T>);
+                    impl<T: Spire> tonic::server::UnaryService<super::ShutdownRequest> for ShutdownSvc<T> {
                         type Response = super::ShutdownResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ShutdownRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                <T as Antivirus>::shutdown(&inner, request).await
-                            };
+                            let fut = async move { <T as Spire>::shutdown(&inner, request).await };
                             Box::pin(fut)
                         }
                     }
@@ -499,29 +432,23 @@ pub mod antivirus_server {
                     };
                     Box::pin(fut)
                 }
-                _ => {
-                    Box::pin(async move {
-                        let mut response = http::Response::new(
-                            tonic::body::Body::default(),
-                        );
-                        let headers = response.headers_mut();
-                        headers
-                            .insert(
-                                tonic::Status::GRPC_STATUS,
-                                (tonic::Code::Unimplemented as i32).into(),
-                            );
-                        headers
-                            .insert(
-                                http::header::CONTENT_TYPE,
-                                tonic::metadata::GRPC_CONTENT_TYPE,
-                            );
-                        Ok(response)
-                    })
-                }
+                _ => Box::pin(async move {
+                    let mut response = http::Response::new(tonic::body::Body::default());
+                    let headers = response.headers_mut();
+                    headers.insert(
+                        tonic::Status::GRPC_STATUS,
+                        (tonic::Code::Unimplemented as i32).into(),
+                    );
+                    headers.insert(
+                        http::header::CONTENT_TYPE,
+                        tonic::metadata::GRPC_CONTENT_TYPE,
+                    );
+                    Ok(response)
+                }),
             }
         }
     }
-    impl<T> Clone for AntivirusServer<T> {
+    impl<T> Clone for SpireServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -534,8 +461,8 @@ pub mod antivirus_server {
         }
     }
     /// Generated gRPC service name
-    pub const SERVICE_NAME: &str = "spire.Antivirus";
-    impl<T> tonic::server::NamedService for AntivirusServer<T> {
+    pub const SERVICE_NAME: &str = "spire.Spire";
+    impl<T> tonic::server::NamedService for SpireServer<T> {
         const NAME: &'static str = SERVICE_NAME;
     }
 }

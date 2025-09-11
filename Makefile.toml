@@ -7,9 +7,9 @@ args = ["fmt", "--", "--emit=files"]
 # command = "cargo"
 # args = ["clean"]
 
-[tasks.build]
-command = "cargo"
-args = ["build", "--release"]
+#[tasks.build]
+#command = "cargo"
+#args = ["build", "--release"]
 # dependencies = ["clean"]
 
 [tasks.test]
@@ -22,4 +22,38 @@ dependencies = [
     "format",
     "build",
     "test"
+]
+
+[tasks.prepare]
+description = "Создать target/dist, если её нет"
+script = [
+    "mkdir -p target/dist"
+]
+
+[tasks.build]
+description = "Собрать проект в режиме release"
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.copy-binary]
+description = "Скопировать бинарник в target/dist"
+script = [
+    # ${CARGO_MAKE_CRATE_TARGET_DIR} = target
+    # ${CARGO_MAKE_CRATE_NAME}      = имя пакета из Cargo.toml
+    "cp ${CARGO_MAKE_CRATE_TARGET_DIR}/release/${CARGO_MAKE_CRATE_NAME} target/dist/"
+]
+
+[tasks.copy-config]
+description = "Скопировать конфиги в target/dist"
+script = [
+    "cp -r config target/dist/"
+]
+
+[tasks.bi]
+description = "Полный процесс: подготовка → сборка → копирование"
+dependencies = [
+    "prepare",
+    "build",
+    "copy-binary",
+    "copy-config"
 ]
