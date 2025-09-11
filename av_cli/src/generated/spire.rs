@@ -38,10 +38,10 @@ pub mod spire_client {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct SpireClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -80,13 +80,14 @@ pub mod spire_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                    http::Request<tonic::body::Body>,
-                    Response = http::Response<
-                        <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
-                    >,
+                http::Request<tonic::body::Body>,
+                Response = http::Response<
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
-                Into<StdError> + std::marker::Send + std::marker::Sync,
+            >,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::Body>,
+            >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             SpireClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -125,56 +126,78 @@ pub mod spire_client {
             &mut self,
             request: impl tonic::IntoRequest<super::ScanFileRequest>,
         ) -> std::result::Result<tonic::Response<super::ScanResult>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/spire.Spire/ScanFile");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("spire.Spire", "ScanFile"));
+            req.extensions_mut().insert(GrpcMethod::new("spire.Spire", "ScanFile"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn scan_buffer(
             &mut self,
             request: impl tonic::IntoRequest<super::ScanBufferRequest>,
         ) -> std::result::Result<tonic::Response<super::ScanResult>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/spire.Spire/ScanBuffer");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("spire.Spire", "ScanBuffer"));
+            req.extensions_mut().insert(GrpcMethod::new("spire.Spire", "ScanBuffer"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn get_status(
             &mut self,
             request: impl tonic::IntoRequest<super::GetStatusRequest>,
-        ) -> std::result::Result<tonic::Response<super::GetStatusResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::GetStatusResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/spire.Spire/GetStatus");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("spire.Spire", "GetStatus"));
+            req.extensions_mut().insert(GrpcMethod::new("spire.Spire", "GetStatus"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn shutdown(
             &mut self,
             request: impl tonic::IntoRequest<super::ShutdownRequest>,
-        ) -> std::result::Result<tonic::Response<super::ShutdownResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
+        ) -> std::result::Result<
+            tonic::Response<super::ShutdownResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
             let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/spire.Spire/Shutdown");
             let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("spire.Spire", "Shutdown"));
+            req.extensions_mut().insert(GrpcMethod::new("spire.Spire", "Shutdown"));
             self.inner.unary(req, path, codec).await
         }
     }
@@ -186,7 +209,7 @@ pub mod spire_server {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
     use tonic::codegen::*;
     /// Generated trait containing gRPC methods that should be implemented for use with SpireServer.
@@ -203,11 +226,17 @@ pub mod spire_server {
         async fn get_status(
             &self,
             request: tonic::Request<super::GetStatusRequest>,
-        ) -> std::result::Result<tonic::Response<super::GetStatusResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::GetStatusResponse>,
+            tonic::Status,
+        >;
         async fn shutdown(
             &self,
             request: tonic::Request<super::ShutdownRequest>,
-        ) -> std::result::Result<tonic::Response<super::ShutdownResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ShutdownResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct SpireServer<T> {
@@ -230,7 +259,10 @@ pub mod spire_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -285,15 +317,21 @@ pub mod spire_server {
                 "/spire.Spire/ScanFile" => {
                     #[allow(non_camel_case_types)]
                     struct ScanFileSvc<T: Spire>(pub Arc<T>);
-                    impl<T: Spire> tonic::server::UnaryService<super::ScanFileRequest> for ScanFileSvc<T> {
+                    impl<T: Spire> tonic::server::UnaryService<super::ScanFileRequest>
+                    for ScanFileSvc<T> {
                         type Response = super::ScanResult;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ScanFileRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { <T as Spire>::scan_file(&inner, request).await };
+                            let fut = async move {
+                                <T as Spire>::scan_file(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -322,16 +360,21 @@ pub mod spire_server {
                 "/spire.Spire/ScanBuffer" => {
                     #[allow(non_camel_case_types)]
                     struct ScanBufferSvc<T: Spire>(pub Arc<T>);
-                    impl<T: Spire> tonic::server::UnaryService<super::ScanBufferRequest> for ScanBufferSvc<T> {
+                    impl<T: Spire> tonic::server::UnaryService<super::ScanBufferRequest>
+                    for ScanBufferSvc<T> {
                         type Response = super::ScanResult;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ScanBufferRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut =
-                                async move { <T as Spire>::scan_buffer(&inner, request).await };
+                            let fut = async move {
+                                <T as Spire>::scan_buffer(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -360,16 +403,21 @@ pub mod spire_server {
                 "/spire.Spire/GetStatus" => {
                     #[allow(non_camel_case_types)]
                     struct GetStatusSvc<T: Spire>(pub Arc<T>);
-                    impl<T: Spire> tonic::server::UnaryService<super::GetStatusRequest> for GetStatusSvc<T> {
+                    impl<T: Spire> tonic::server::UnaryService<super::GetStatusRequest>
+                    for GetStatusSvc<T> {
                         type Response = super::GetStatusResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::GetStatusRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut =
-                                async move { <T as Spire>::get_status(&inner, request).await };
+                            let fut = async move {
+                                <T as Spire>::get_status(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -398,15 +446,21 @@ pub mod spire_server {
                 "/spire.Spire/Shutdown" => {
                     #[allow(non_camel_case_types)]
                     struct ShutdownSvc<T: Spire>(pub Arc<T>);
-                    impl<T: Spire> tonic::server::UnaryService<super::ShutdownRequest> for ShutdownSvc<T> {
+                    impl<T: Spire> tonic::server::UnaryService<super::ShutdownRequest>
+                    for ShutdownSvc<T> {
                         type Response = super::ShutdownResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ShutdownRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { <T as Spire>::shutdown(&inner, request).await };
+                            let fut = async move {
+                                <T as Spire>::shutdown(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -432,19 +486,25 @@ pub mod spire_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    let mut response = http::Response::new(tonic::body::Body::default());
-                    let headers = response.headers_mut();
-                    headers.insert(
-                        tonic::Status::GRPC_STATUS,
-                        (tonic::Code::Unimplemented as i32).into(),
-                    );
-                    headers.insert(
-                        http::header::CONTENT_TYPE,
-                        tonic::metadata::GRPC_CONTENT_TYPE,
-                    );
-                    Ok(response)
-                }),
+                _ => {
+                    Box::pin(async move {
+                        let mut response = http::Response::new(
+                            tonic::body::Body::default(),
+                        );
+                        let headers = response.headers_mut();
+                        headers
+                            .insert(
+                                tonic::Status::GRPC_STATUS,
+                                (tonic::Code::Unimplemented as i32).into(),
+                            );
+                        headers
+                            .insert(
+                                http::header::CONTENT_TYPE,
+                                tonic::metadata::GRPC_CONTENT_TYPE,
+                            );
+                        Ok(response)
+                    })
+                }
             }
         }
     }
