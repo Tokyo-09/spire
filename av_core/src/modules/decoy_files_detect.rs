@@ -68,7 +68,7 @@ pub fn detect_decoy_files(start_path: &str) -> Vec<SuspiciousFile> {
     suspicious
 }
 
-fn is_hidden_file(file_name: &str, meta: &fs::Metadata, path: &Path) -> bool {
+fn is_hidden_file(file_name: &str, _meta: &fs::Metadata, _path: &Path) -> bool {
     if file_name.starts_with('.') {
         return true;
     }
@@ -97,14 +97,9 @@ fn has_double_extension(file_name: &str) -> bool {
     let base_name = parts[1];
 
     // Подозрительно, если базовое имя тоже имеет расширение (двойная точка) или комбинация вроде .txt.exe
-    if base_name.contains('.')
+    base_name.contains('.')
         || (extension == "exe" || extension == "bat" || extension == "js")
             && (base_name.ends_with("txt")
                 || base_name.ends_with("doc")
                 || base_name.ends_with("jpg"))
-    {
-        true
-    } else {
-        false
-    }
 }

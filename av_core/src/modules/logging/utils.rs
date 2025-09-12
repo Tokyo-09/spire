@@ -1,7 +1,7 @@
 use users::{get_current_uid, get_user_by_uid};
-use windows::{Win32::System::WindowsProgramming::GetUserNameW, core::PWSTR};
+// use windows::{Win32::System::WindowsProgramming::GetUserNameW, core::PWSTR};
 
-pub fn get_logged_in_username() -> Result<String, String> {
+pub fn get_logged_in_username() -> anyhow::Result<String, String> {
     #[cfg(target_os = "windows")]
     {
         let mut buffer: [u16; 256] = [0; 256];
@@ -20,9 +20,9 @@ pub fn get_logged_in_username() -> Result<String, String> {
     {
         let uid = get_current_uid();
         if let Some(user) = get_user_by_uid(uid) {
-            println!("Logged‑in user: {}", user.name().to_string_lossy());
+            Ok(format!("Logged-in user: {}", user.name().to_string_lossy()))
         } else {
-            eprintln!("No user entry found for UID {}", uid);
+            Err(format!("No user entry found for UID {}", uid))
         }
     }
 }

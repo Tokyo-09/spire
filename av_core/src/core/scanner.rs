@@ -1,5 +1,5 @@
 use crate::{
-    core::{ScanResult, config::Config, hashes::Hasher},
+    core::{config::Config, entropy::calculate_entropy, hashes::Hasher, models::ScanResult},
     modules::{db::ThreatDatabase, quarantine::Quarantine},
 };
 
@@ -10,12 +10,6 @@ use std::fs;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 use yara_x::{Compiler, Scanner as yara_Scanner};
-
-pub enum IocMarksLevel {
-    High,
-    Medium,
-    Low,
-}
 
 #[allow(dead_code)]
 pub struct Scanner {
@@ -94,12 +88,13 @@ impl Scanner {
             let sha256hash = Hasher::calculate_sha256(path.to_path_buf())?
                 .trim()
                 .to_lowercase();
+            let entropy = calculate_entropy(path.to_path_buf())?;
 
             match Scanner::check_file(conn, md5hash.clone(), sha256hash.clone()) {
                 Ok(Some(malware)) => {
                     pb.println(format!(
-                        "Threat detected in {}: {} (MD5: {}, SHA256: {})",
-                        path_display, malware.name, malware.md5hash, malware.sha256hash
+                        "Threat detected in {}: {} (MD5: {}, SHA256: {}, entropy: {})",
+                        path_display, malware.name, malware.md5hash, malware.sha256hash, entropy
                     ));
                     Quarantine::quarantine_file(
                         conn,
@@ -109,8 +104,8 @@ impl Scanner {
                         },
                     )?;
                     pb.println(format!(
-                        "Quarantined file {} (MD5: {}, SHA256: {})",
-                        malware.name, malware.md5hash, malware.sha256hash
+                        "Quarantined file {} (MD5: {}, SHA256: {}, entropy: {})",
+                        malware.name, malware.md5hash, malware.sha256hash, entropy
                     ));
                     results.push(ScanResult::Threat {
                         path: path.to_path_buf(),
@@ -159,12 +154,17 @@ impl Scanner {
                     let sha256hash = Hasher::calculate_sha256(entry.path().to_path_buf())?
                         .trim()
                         .to_lowercase();
+                    let entropy = calculate_entropy(entry.path().to_path_buf())?; // Fixed: Use entry.path() instead of path
 
                     match Scanner::check_file(conn, md5hash.clone(), sha256hash.clone()) {
                         Ok(Some(malware)) => {
                             pb.println(format!(
-                                "Threat detected in {}: {} (MD5: {}, SHA256: {})",
-                                path_display, malware.name, malware.md5hash, malware.sha256hash
+                                "Threat detected in {}: {} (MD5: {}, SHA256: {}, entropy: {})",
+                                path_display,
+                                malware.name,
+                                malware.md5hash,
+                                malware.sha256hash,
+                                entropy
                             ));
                             Quarantine::quarantine_file(
                                 conn,
@@ -174,8 +174,8 @@ impl Scanner {
                                 },
                             )?;
                             pb.println(format!(
-                                "Quarantined file {} (MD5: {}, SHA256: {})",
-                                malware.name, malware.md5hash, malware.sha256hash
+                                "Quarantined file {} (MD5: {}, SHA256: {}, entropy: {})",
+                                malware.name, malware.md5hash, malware.sha256hash, entropy
                             ));
                             results.push(ScanResult::Threat {
                                 path: entry.path().to_path_buf(),

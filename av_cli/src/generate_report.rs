@@ -1,9 +1,9 @@
 use chrono::{DateTime, Utc};
 use std::fs::write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use av_core::core::ScanResult;
+use av_core::core::models::ScanResult;
 
 pub fn generate_html_report(
     results: &[ScanResult],
@@ -137,4 +137,13 @@ pub fn generate_html_report(
 
     write(output_path, html)?;
     Ok(())
+}
+
+#[allow(unused_variables, dead_code)]
+pub fn generate_json_report(
+    results: &[ScanResult],
+    output_path: &Path,
+    timestamp: Option<u64>,
+) -> anyhow::Result<()> {
+    unimplemented!();
 }
