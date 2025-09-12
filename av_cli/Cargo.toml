@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 av_core = { path = "../av_core" }
+heuristic_engine = { path = "../av_core/heuristic_engine" }
 
 clap = { workspace = true }
 env_logger = { workspace = true }

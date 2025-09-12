@@ -1,5 +1,8 @@
+#[cfg(target_os = "linux")]
 use users::{get_current_uid, get_user_by_uid};
-// use windows::{Win32::System::WindowsProgramming::GetUserNameW, core::PWSTR};
+
+#[cfg(target_os = "windows")]
+use windows::{Win32::System::WindowsProgramming::GetUserNameW, core::PWSTR};
 
 pub fn get_logged_in_username() -> anyhow::Result<String, String> {
     #[cfg(target_os = "windows")]

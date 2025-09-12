@@ -1,5 +1,5 @@
 [workspace]
-members = ["av_core", "av_cli", "av_engine"]
+members = ["av_core", "av_cli", "av_engine", "av_core/heuristic_engine"]
 resolver = "2"
 
 [workspace.dependencies]

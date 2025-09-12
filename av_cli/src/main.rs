@@ -5,6 +5,7 @@ use rusqlite::Connection;
 
 use std::{env, fs::DirBuilder, path::Path};
 
+use av_core::SpireAVCore;
 use av_core::{
     core::scanner::Scanner,
     modules::{db::ThreatDatabase, quarantine::Quarantine},
@@ -27,6 +28,9 @@ fn main() -> anyhow::Result<()> {
     let home_dir = env::var("HOME")?;
     let spire_dir = format!("{}/.spire", home_dir);
     let db_path = format!("{}/database.db", spire_dir);
+
+    //    let heuristic_scan = SpireAVCore::heuristic_scan();
+    //    dbg!(heuristic_scan);
 
     // Проверяем существование директории ~/.spire
     // Cоздаем ее если нет
