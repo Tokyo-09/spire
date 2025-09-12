@@ -1,4 +1,3 @@
-// Эта функция вызывается при запуске процесса, а не при сканировании файла
 pub fn analyze_process_behavior(command_line: &str, env_vars: &[&str]) -> Option<String> {
     if command_line.contains("powershell -enc") && env_vars.iter().any(|e| e.contains("TEMP")) {
         return Some(

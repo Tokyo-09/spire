@@ -29,8 +29,7 @@ fn main() -> anyhow::Result<()> {
     let spire_dir = format!("{}/.spire", home_dir);
     let db_path = format!("{}/database.db", spire_dir);
 
-    //    let heuristic_scan = SpireAVCore::heuristic_scan();
-    //    dbg!(heuristic_scan);
+    SpireAVCore::heuristic_scan();
 
     // Проверяем существование директории ~/.spire
     // Cоздаем ее если нет

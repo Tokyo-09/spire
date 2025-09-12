@@ -1,56 +1,132 @@
+// heuristic_engine/rules/file_structure.rs
+
+use crate::types::{FileContainer, FileData};
+use goblin::elf;
+
 #[cfg(target_os = "windows")]
-use pe::PeImage; // Добавь в Cargo.toml: pe = "0.6"
+use goblin::pe;
 
 #[cfg(target_os = "windows")]
 pub fn scan_pe_structure(data: &FileData) -> Option<String> {
-    if data.file_type != crate::types::FileType::PE {
-        return None;
+    let pe = match &data.container {
+        FileContainer::Pe(pe) => pe,
+        _ => return None, // Not a PE file
+    };
+
+    // 🔍 1. Check for RWX sections
+    for section in &pe.sections {
+        let characteristics = section.characteristics;
+        if characteristics & pe::section_table::IMAGE_SCN_MEM_READ != 0
+            && characteristics & pe::section_table::IMAGE_SCN_MEM_WRITE != 0
+            && characteristics & pe::section_table::IMAGE_SCN_MEM_EXECUTE != 0
+        {
+            return Some("Detected section with RWX permissions (read+write+execute)".to_string());
+        }
     }
 
-    // Попробуем распарсить как PE
-    match PeImage::parse(&data.bytes) {
-        Ok(pe) => {
-            // 1. Есть ли секция с правами RWX? (очень подозрительно)
-            for section in pe.sections() {
-                if section.characteristics().contains(
-                    pe::SectionCharacteristics::MEM_READ
-                        | pe::SectionCharacteristics::MEM_WRITE
-                        | pe::SectionCharacteristics::MEM_EXECUTE,
-                ) {
-                    return Some(
-                        "Обнаружена секция с правами RWX (выполнение + запись)".to_string(),
-                    );
-                }
-            }
+    // 🔍 2. Check for suspicious imports
+    let suspicious_imports = [
+        "VirtualAlloc",
+        "WriteProcessMemory",
+        "CreateRemoteThread",
+        "ShellExecute",
+        "WinExec",
+        "LoadLibrary",
+        "GetProcAddress",
+    ];
 
-            // 2. Подозрительные импорты
-            let suspicious_imports = [
-                "VirtualAlloc",
-                "WriteProcessMemory",
-                "CreateRemoteThread",
-                "ShellExecute",
-            ];
-            for imp in pe.imports() {
-                for lib in imp.dll_name().to_str().unwrap_or("") {
-                    if suspicious_imports.iter().any(|&s| lib.contains(s)) {
-                        return Some(format!("Подозрительный импорт: {}", lib));
-                    }
-                }
-            }
+    for import in &pe.imports {
+        let name = import.name.clone();
+        if suspicious_imports.iter().any(|&s| name.contains(s)) {
+            return Some(format!("Suspicious import: {}", name));
+        }
+    }
 
-            // 3. Нет цифровой подписи?
-            if !pe.has_authenticode_signature() {
-                return Some("Файл не подписан".to_string());
+    // 🔍 3. No authenticode signature check (not supported in goblin 0.10)
+    None
+}
+
+// --- ELF Analysis ---
+pub fn scan_elf_structure(data: &FileData) -> Option<String> {
+    let elf = match &data.container {
+        FileContainer::Elf(elf) => elf,
+        _ => return None, // Not an ELF file
+    };
+
+    // 🔍 1. Check for RWX segments
+    for ph in &elf.program_headers {
+        let flags = ph.p_flags;
+        let is_read = flags & elf::program_header::PF_R != 0;
+        let is_write = flags & elf::program_header::PF_W != 0;
+        let is_exec = flags & elf::program_header::PF_X != 0;
+
+        if is_read && is_write && is_exec {
+            return Some("Detected segment with RWX permissions (read+write+execute)".to_string());
+        }
+    }
+
+    // 🔍 2. Check for suspicious interpreter
+    if let Some(interp) = elf.interpreter {
+        let common_interp = [
+            "/lib64/ld-linux-x86-64.so.2",
+            "/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+            "/usr/lib64/ld-linux-x86-64.so.2",
+            "/lib/ld-linux-armhf.so.3", // ARM
+        ];
+        if !common_interp.iter().any(|&s| interp.contains(s)) {
+            return Some(format!("Suspicious interpreter: {}", interp));
+        }
+    }
+
+    // 🔍 3. Check for suspicious dynamic libraries
+    let suspicious_libs = [
+        "libsystemd.so",
+        "libdl.so",
+        "libpthread.so",
+        "libm.so",
+        "libncurses.so",
+    ];
+
+    if let Some(dynamic) = &elf.dynamic {
+        for dyn_entry in &dynamic.dyns {
+            if dyn_entry.d_tag == elf::dynamic::DT_NEEDED
+                && let Some(name) = elf.strtab.get_at(dyn_entry.d_val as usize)
+                && suspicious_libs.iter().any(|&s| name.contains(s))
+            {
+                return Some(format!("Suspicious library in DT_NEEDED: {}", name));
             }
         }
-        Err(_) => return None, // Не PE — пропускаем
+    }
+
+    // 🔍 4. Check for suspicious sections
+    for sh in &elf.section_headers {
+        if let Some(name) = elf.shdr_strtab.get_at(sh.sh_name)
+            && (name.starts_with(".gob") || name.starts_with(".crypt") || name.starts_with(".xor"))
+        {
+            return Some(format!("Detected suspicious section: {}", name));
+        }
+    }
+
+    // 🔍 5. Check for large file size (>5MB)
+    if data.bytes.len() > 5 * 1024 * 1024 {
+        return Some("File is very large (>5MB), may contain embedded shellcode".to_string());
     }
 
     None
 }
 
-// Для ELF — можно использовать crate `elf`
-// Пример: проверка, есть ли `.got.plt`, `.text` с RWX, странные программы-интерпретаторы
-pub fn scan_elf_struct() -> Option<String> {
-    unimplemented!();
+// --- Mach-O Analysis ---
+pub fn scan_macho_structure(data: &FileData) -> Option<String> {
+    let _macho = match &data.container {
+        FileContainer::MachO(macho) => macho,
+        _ => return None, // Not a Mach-O file
+    };
+
+    // 🔍 Basic check for large file size (>5MB)
+    if data.bytes.len() > 5 * 1024 * 1024 {
+        return Some("File is very large (>5MB), may contain embedded shellcode".to_string());
+    }
+
+    // TODO: Add more Mach-O specific checks if needed
+    None
 }

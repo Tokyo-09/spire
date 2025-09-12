@@ -1,3 +1,7 @@
+// heuristic_engine/types.rs
+
+use goblin::{elf::Elf, mach::MachO, pe::PE};
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum HeuristicResult {
     Safe,
@@ -30,17 +34,28 @@ impl Severity {
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct FileData {
-    pub bytes: Vec<u8>,
-    pub file_type: FileType,
-    pub strings: Vec<String>, // предварительно извлечённые строки
-}
-
 #[derive(Debug, Clone, Copy)]
 pub enum FileType {
     PE,     // Windows executable
     ELF,    // Linux executable
+    MachO,  // macOS executable
     Script, // .bat, .ps1, .sh
     Unknown,
+}
+
+// Enum to hold parsed file structures, parameterized by lifetime 'a
+#[derive(Debug)]
+pub enum FileContainer<'a> {
+    Elf(Box<Elf<'a>>),
+    Pe(Box<PE<'a>>),
+    MachO(Box<MachO<'a>>),
+    None,
+}
+
+#[derive(Debug)]
+pub struct FileData<'a> {
+    pub bytes: Vec<u8>,
+    pub file_type: FileType,
+    pub strings: Vec<String>,         // Extracted strings
+    pub container: FileContainer<'a>, // Use lifetime 'a
 }

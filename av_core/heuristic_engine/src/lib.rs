@@ -1,5 +1,6 @@
 pub mod rules;
 pub mod types;
+pub mod utils;
 
 use crate::rules::*;
 use crate::types::*;
@@ -31,11 +32,10 @@ impl HeuristicEngine {
                 */
                 HeuristicRule {
                     name: "xor_obfuscation",
-                    description: "Обнаружение обфускации через нечитаемые байты",
+                    description: "Obfuscation detection",
                     severity: Severity::Medium,
                     check_fn: obfuscation::detect_xor_obfuscation,
                 },
-                // Добавляй новые правила по мере развития!
             ],
         }
     }
