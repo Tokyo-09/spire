@@ -11,6 +11,7 @@ hex = "0.4.3"
 yara-x = "1.5.0"
 dirs = "6.0.0"
 
+clap = { workspace = true }
 log = { workspace = true }
 heuristic_engine = { path = "heuristic_engine"}
 rusqlite = { workspace = true }

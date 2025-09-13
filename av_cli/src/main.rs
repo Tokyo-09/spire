@@ -5,7 +5,6 @@ use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use rusqlite::Connection;
 use std::{env, fs::DirBuilder, path::Path, sync::mpsc::channel, time::Duration};
 
-use av_core::SpireAVCore;
 use av_core::{
     core::scanner::Scanner,
     modules::{db::ThreatDatabase, quarantine::Quarantine},
@@ -28,6 +27,7 @@ fn main() -> anyhow::Result<()> {
     let home_dir = env::var("HOME")?;
     let spire_dir = format!("{}/.spire", home_dir);
     let db_path = format!("{}/database.db", spire_dir);
+    let yara_db_path = format!("{}/yara_rules/yara", spire_dir);
 
     // Проверяем существование директории ~/.spire
     // Cоздаем ее если нет
@@ -37,6 +37,13 @@ fn main() -> anyhow::Result<()> {
     }
 
     // Проверяем существование файла database.db
+    if !Path::new(&yara_db_path).exists() {
+        debug!("Database not found, downloading...");
+        ThreatDatabase::new(&spire_dir, &yara_db_path)?;
+    } else {
+        debug!("Database already exists at: {}", yara_db_path);
+    }
+
     if !Path::new(&db_path).exists() {
         debug!("Database not found, downloading...");
         ThreatDatabase::new(&spire_dir, &db_path)?;
@@ -49,22 +56,37 @@ fn main() -> anyhow::Result<()> {
     let conn = Connection::open(&db_path)?;
 
     match args.command {
-        Command::Scan { path, report } => {
-            let results = Scanner::scan_path(&conn, &path)?;
-            SpireAVCore::heuristic_scan(&path);
-            if let Some(report_path) = report {
-                generate_html_report(&results, &report_path, None)?;
-                m.println(format!("Report generated at: {}", report_path.display()))?;
+        Command::Scan { scan_type } => match scan_type {
+            av_core::ScanModes::Full {
+                rules,
+                path,
+                report,
+            } => {
+                if !path.exists() {
+                    anyhow::bail!("Scan path does not exist: {}", path.display());
+                }
+
+                let results = Scanner::scan_yara(&conn, &rules, &path)?;
+                if let Some(report_path) = report {
+                    generate_html_report(&results, &report_path, None)?;
+                    m.println(format!("Report generated at: {}", report_path.display()))?;
+                }
+                // SpireAVCore::heuristic_scan(&path);
+                // SpireAVCore::ProcessScan
             }
-        }
+            av_core::ScanModes::Fast { path, report } => {
+                let results = Scanner::scan_path(&conn, &path)?;
+                if let Some(report_path) = report {
+                    generate_html_report(&results, &report_path, None)?;
+                    m.println(format!("Report generated at: {}", report_path.display()))?;
+                }
+            }
+        },
         Command::YaraScan {
             rules,
             path,
             report,
         } => {
-            if !path.exists() {
-                anyhow::bail!("Scan path does not exist: {}", path.display());
-            }
             let results = Scanner::scan_yara(&conn, &rules, &path)?;
             if let Some(report_path) = report {
                 generate_html_report(&results, &report_path, None)?;

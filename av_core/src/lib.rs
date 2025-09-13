@@ -9,9 +9,27 @@ use std::path::PathBuf;
 pub mod core;
 pub mod modules;
 
+#[derive(clap::Subcommand, Debug)]
 pub enum ScanModes {
-    Static,
-    Dynamic,
+    Fast {
+        // Directory or file to scan
+        #[arg(long)]
+        path: PathBuf,
+        // Generate report
+        #[arg(long)]
+        report: Option<PathBuf>,
+    },
+    Full {
+        //Path with yara rules
+        #[arg(long)]
+        rules: PathBuf,
+        //Path to scan
+        #[arg(long)]
+        path: PathBuf,
+        // Report
+        #[clap(long, value_parser)]
+        report: Option<PathBuf>,
+    },
 }
 
 pub struct SpireAVCore {}

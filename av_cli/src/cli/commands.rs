@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use std::{net::Ipv4Addr, path::PathBuf};
 
 use crate::cli::QuarantineAction;
+use av_core::ScanModes;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -17,12 +18,8 @@ pub struct Cli {
 #[derive(Subcommand, Debug)]
 pub enum Command {
     Scan {
-        // Directory or file to scan
-        #[arg(long)]
-        path: PathBuf,
-        // Generate report
-        #[arg(long)]
-        report: Option<PathBuf>,
+        #[clap(subcommand)]
+        scan_type: ScanModes,
     },
     YaraScan {
         //Path with yara rules
@@ -37,7 +34,7 @@ pub enum Command {
     },
     ProcessScan {
         #[clap(long)]
-        yara_rules: Option<PathBuf>,
+        yara_rules: PathBuf,
     },
     Quarantine {
         #[clap(subcommand)]
