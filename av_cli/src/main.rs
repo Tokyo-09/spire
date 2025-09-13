@@ -1,6 +1,6 @@
 use clap::Parser;
 use indicatif::MultiProgress;
-use log::{debug, error, info};
+use log::{debug, error};
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use rusqlite::Connection;
 use std::{env, fs::DirBuilder, path::Path, sync::mpsc::channel, time::Duration};
