@@ -29,8 +29,8 @@ impl Quarantine {
         };
 
         let quarantine_dir = dirs::data_dir()
-            .unwrap_or_else(|| PathBuf::from("./.rust_sentinel"))
-            .join("quarantine");
+            .unwrap_or_else(|| PathBuf::from("./.spire"))
+            .join("spire_quarantine");
         fs::create_dir_all(&quarantine_dir)?;
 
         let timestamp = Utc::now().timestamp();

@@ -20,16 +20,19 @@ impl HeuristicEngine {
                     severity: Severity::High,
                     check_fn: strings::scan_suspicious_strings,
                 },
-                /*                 HeuristicRule {
+                #[cfg(target_os = "windows")]
+                HeuristicRule {
+                    name: "elf_rwx_section",
+                    description: "Проверка наличия RWX-секций в PE-файле",
+                    severity: Severity::High,
+                    check_fn: file_struct::scan_pe_structure,
+                },
+                HeuristicRule {
                     name: "pe_rwx_section",
                     description: "Проверка наличия RWX-секций в PE-файле",
                     severity: Severity::High,
-                    #[cfg(target_os = "windows")]
-                    check_fn: file_struct::scan_pe_structure,
-                    #[cfg(target_os = "linux")]
-                    check_fn: file_struct::scan_elf_struct,
+                    check_fn: file_struct::scan_elf_structure,
                 },
-                */
                 HeuristicRule {
                     name: "xor_obfuscation",
                     description: "Obfuscation detection",

@@ -1,4 +1,5 @@
 use std::fs;
+#[cfg(target_os = "windows")]
 use std::path::Path;
 use walkdir::WalkDir;
 
@@ -46,7 +47,13 @@ pub fn detect_decoy_files(start_path: &str) -> Vec<SuspiciousFile> {
                 }
 
                 // Проверка на hidden
-                if is_hidden_file(&file_name, &meta, path) {
+                if is_hidden_file(
+                    &file_name,
+                    #[cfg(target_os = "windows")]
+                    &meta,
+                    #[cfg(target_os = "windows")]
+                    path,
+                ) {
                     suspicious.push(SuspiciousFile {
                         path: path.to_string_lossy().to_string(),
                         reason: Reason::Hidden,
@@ -68,7 +75,11 @@ pub fn detect_decoy_files(start_path: &str) -> Vec<SuspiciousFile> {
     suspicious
 }
 
-fn is_hidden_file(file_name: &str, _meta: &fs::Metadata, _path: &Path) -> bool {
+fn is_hidden_file(
+    file_name: &str,
+    #[cfg(target_os = "windows")] meta: &fs::Metadata,
+    #[cfg(target_os = "windows")] _path: &Path,
+) -> bool {
     if file_name.starts_with('.') {
         return true;
     }

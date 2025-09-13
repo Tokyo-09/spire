@@ -10,10 +10,9 @@ use goblin::pe;
 pub fn scan_pe_structure(data: &FileData) -> Option<String> {
     let pe = match &data.container {
         FileContainer::Pe(pe) => pe,
-        _ => return None, // Not a PE file
+        _ => return None,
     };
 
-    // 🔍 1. Check for RWX sections
     for section in &pe.sections {
         let characteristics = section.characteristics;
         if characteristics & pe::section_table::IMAGE_SCN_MEM_READ != 0
@@ -24,7 +23,6 @@ pub fn scan_pe_structure(data: &FileData) -> Option<String> {
         }
     }
 
-    // 🔍 2. Check for suspicious imports
     let suspicious_imports = [
         "VirtualAlloc",
         "WriteProcessMemory",
@@ -42,18 +40,16 @@ pub fn scan_pe_structure(data: &FileData) -> Option<String> {
         }
     }
 
-    // 🔍 3. No authenticode signature check (not supported in goblin 0.10)
     None
 }
 
-// --- ELF Analysis ---
+#[cfg(target_os = "linux")]
 pub fn scan_elf_structure(data: &FileData) -> Option<String> {
     let elf = match &data.container {
         FileContainer::Elf(elf) => elf,
-        _ => return None, // Not an ELF file
+        _ => return None,
     };
 
-    // 🔍 1. Check for RWX segments
     for ph in &elf.program_headers {
         let flags = ph.p_flags;
         let is_read = flags & elf::program_header::PF_R != 0;
@@ -65,7 +61,6 @@ pub fn scan_elf_structure(data: &FileData) -> Option<String> {
         }
     }
 
-    // 🔍 2. Check for suspicious interpreter
     if let Some(interp) = elf.interpreter {
         let common_interp = [
             "/lib64/ld-linux-x86-64.so.2",
@@ -78,7 +73,6 @@ pub fn scan_elf_structure(data: &FileData) -> Option<String> {
         }
     }
 
-    // 🔍 3. Check for suspicious dynamic libraries
     let suspicious_libs = [
         "libsystemd.so",
         "libdl.so",
@@ -98,7 +92,6 @@ pub fn scan_elf_structure(data: &FileData) -> Option<String> {
         }
     }
 
-    // 🔍 4. Check for suspicious sections
     for sh in &elf.section_headers {
         if let Some(name) = elf.shdr_strtab.get_at(sh.sh_name)
             && (name.starts_with(".gob") || name.starts_with(".crypt") || name.starts_with(".xor"))
@@ -107,7 +100,6 @@ pub fn scan_elf_structure(data: &FileData) -> Option<String> {
         }
     }
 
-    // 🔍 5. Check for large file size (>5MB)
     if data.bytes.len() > 5 * 1024 * 1024 {
         return Some("File is very large (>5MB), may contain embedded shellcode".to_string());
     }
@@ -115,18 +107,16 @@ pub fn scan_elf_structure(data: &FileData) -> Option<String> {
     None
 }
 
-// --- Mach-O Analysis ---
+#[cfg(target_os = "macos")]
 pub fn scan_macho_structure(data: &FileData) -> Option<String> {
     let _macho = match &data.container {
         FileContainer::MachO(macho) => macho,
-        _ => return None, // Not a Mach-O file
+        _ => return None,
     };
 
-    // 🔍 Basic check for large file size (>5MB)
     if data.bytes.len() > 5 * 1024 * 1024 {
         return Some("File is very large (>5MB), may contain embedded shellcode".to_string());
     }
 
-    // TODO: Add more Mach-O specific checks if needed
     None
 }

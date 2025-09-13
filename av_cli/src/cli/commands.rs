@@ -47,7 +47,9 @@ pub enum Command {
         #[clap(subcommand)]
         action: QuarantineAction,
     },
-    Monitor {},
+    Monitor {
+        path: PathBuf,
+    },
     UpdateDB {
         // Server ip address
         ip: Option<Ipv4Addr>,

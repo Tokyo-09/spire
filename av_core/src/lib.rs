@@ -4,6 +4,7 @@ use heuristic_engine::{
     HeuristicEngine,
     types::{FileData, FileType, HeuristicResult},
 };
+use std::path::PathBuf;
 
 pub mod core;
 pub mod modules;
@@ -16,10 +17,10 @@ pub enum ScanModes {
 pub struct SpireAVCore {}
 
 impl SpireAVCore {
-    pub fn heuristic_scan() {
+    pub fn heuristic_scan(path: &PathBuf) {
         let engine = HeuristicEngine::new();
 
-        let file_path = "../../test_files/evil";
+        let file_path = path;
         let bytes = std::fs::read(file_path).expect("Не удалось прочитать файл");
 
         // Parse the file

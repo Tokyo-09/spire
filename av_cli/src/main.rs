@@ -1,9 +1,9 @@
 use clap::Parser;
 use indicatif::MultiProgress;
-use log::debug;
+use log::{debug, error, info};
+use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use rusqlite::Connection;
-
-use std::{env, fs::DirBuilder, path::Path};
+use std::{env, fs::DirBuilder, path::Path, sync::mpsc::channel, time::Duration};
 
 use av_core::SpireAVCore;
 use av_core::{
@@ -29,8 +29,6 @@ fn main() -> anyhow::Result<()> {
     let spire_dir = format!("{}/.spire", home_dir);
     let db_path = format!("{}/database.db", spire_dir);
 
-    SpireAVCore::heuristic_scan();
-
     // Проверяем существование директории ~/.spire
     // Cоздаем ее если нет
     if !Path::new(&spire_dir).exists() {
@@ -53,6 +51,7 @@ fn main() -> anyhow::Result<()> {
     match args.command {
         Command::Scan { path, report } => {
             let results = Scanner::scan_path(&conn, &path)?;
+            SpireAVCore::heuristic_scan(&path);
             if let Some(report_path) = report {
                 generate_html_report(&results, &report_path, None)?;
                 m.println(format!("Report generated at: {}", report_path.display()))?;
@@ -108,13 +107,53 @@ fn main() -> anyhow::Result<()> {
                 println!("Deleted item with ID: {id}");
             }
         },
-        Command::Monitor {} => {
-            "Monitor not implemented".to_string();
-            unimplemented!("Monitor functionality is not yet implemented");
+        Command::Monitor { path } => {
+            if !path.exists() {
+                anyhow::bail!("Monitor path does not exist: {}", path.display());
+            }
+            monitor_directory(&conn, &path, &m)?;
         }
         Command::UpdateDB { ip } => {
             m.println(format!("Database update not implemented: ip={ip:?}"))?;
             unimplemented!("Database update is not yet implemented");
+        }
+    }
+
+    Ok(())
+}
+
+fn monitor_directory(conn: &Connection, path: &Path, m: &MultiProgress) -> anyhow::Result<()> {
+    // Create a channel to receive filesystem events
+    let (tx, rx) = channel();
+    let mut watcher = RecommendedWatcher::new(
+        move |res: notify::Result<Event>| {
+            let _ = tx.send(res);
+        },
+        Config::default().with_poll_interval(Duration::from_secs(1)),
+    )?;
+
+    // Watch the directory recursively
+    watcher.watch(path, RecursiveMode::Recursive)?;
+    m.println(format!("Monitoring directory: {}", path.display()))?;
+
+    // Process filesystem events
+    for res in rx {
+        match res {
+            Ok(event) => {
+                // Handle create and modify events
+                if event.kind.is_create() || event.kind.is_modify() {
+                    for file_path in event.paths {
+                        if file_path.is_file() {
+                            m.println(format!("Detected change in file: {}", file_path.display()))?;
+                            Scanner::scan_path(conn, &file_path)?;
+                            // SpireAVCore::heuristic_scan(&file_path)?;
+                        }
+                    }
+                }
+            }
+            Err(e) => {
+                error!("Filesystem watch error: {}", e);
+            }
         }
     }
 
