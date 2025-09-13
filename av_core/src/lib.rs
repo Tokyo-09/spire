@@ -12,6 +12,9 @@ pub mod modules;
 #[derive(clap::Subcommand, Debug)]
 pub enum ScanModes {
     Fast {
+        // Path with yara rules
+        #[arg(long)]
+        rules: PathBuf,
         // Directory or file to scan
         #[arg(long)]
         path: PathBuf,

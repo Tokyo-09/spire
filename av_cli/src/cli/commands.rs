@@ -33,8 +33,8 @@ pub enum Command {
         report: Option<PathBuf>,
     },
     ProcessScan {
-        #[clap(long)]
-        yara_rules: PathBuf,
+        #[clap(subcommand)]
+        scan_type: ScanModes,
     },
     Quarantine {
         #[clap(subcommand)]
